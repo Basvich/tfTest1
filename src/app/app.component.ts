@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     // Train the model using the data.
     model.fit(xs, ys, { epochs: 10 }).then(() => {
       // Use the model to do inference on a data point the model hasn't seen before:
-      model.predict(tf.tensor2d([5], [1, 1])).print();
+      model.predict(tf.tensor2d([5], [1, 1])).toString();
       // Open the browser devtools to see the output
     });
   }
@@ -36,8 +36,21 @@ export class AppComponent implements OnInit {
       values[i]= Math.random()*100;
     }
     const shape: [number, number, number]=[2,5,3];
-    const data=tf.tensor3d(values, shape, 'int32');
-    console.log(data.toString());
+    const tense=tf.tensor3d(values, shape, 'int32');
+    console.log(tense.data());
+    /* tense.data(function(stuff){
+      console.log(stuff);
+    }); */
+    tense.data().then(function(stuff){
+      console.log(stuff);
+    });
+  }
+
+  public testMult(){
+    const a=tf.tensor2d([1,2],[1,2]);
+    const b=tf.tensor2d([1,2,3,4],[2,2]);
+    const c=a.matMul(b);
+    console.log(c.toString());
   }
 
   ngOnInit(): void {
