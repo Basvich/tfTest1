@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as tf from '@tensorflow/tfjs';
 import { math } from '@tensorflow/tfjs';
+import * as netUtils from '../neutils'
 
 @Component({
   selector: 'app-root',
@@ -31,26 +32,54 @@ export class AppComponent implements OnInit {
 
   public setup() {
     // Pass an array of values to create a vector.
-    const values=[100];
-    for(let i=0; i< 30; i++){
-      values[i]= Math.random()*100;
+    const values = [100];
+    for (let i = 0; i < 30; i++) {
+      values[i] = Math.random() * 100;
     }
-    const shape: [number, number, number]=[2,5,3];
-    const tense=tf.tensor3d(values, shape, 'int32');
+    const shape: [number, number, number] = [2, 5, 3];
+    const tense = tf.tensor3d(values, shape, 'int32');
     console.log(tense.data());
     /* tense.data(function(stuff){
       console.log(stuff);
     }); */
-    tense.data().then(function(stuff){
+    tense.data().then(function (stuff) {
       console.log(stuff);
     });
   }
 
-  public testMult(){
-    const a=tf.tensor2d([1,2],[1,2]);
-    const b=tf.tensor2d([1,2,3,4],[2,2]);
-    const c=a.matMul(b);
+  public testMult() {
+    const a = tf.tensor2d([1, 2], [1, 2]);
+    const b = tf.tensor2d([1, 2, 3, 4], [2, 2]);
+    const c = a.matMul(b);
     console.log(c.toString());
+  }
+
+  public testMemory() {
+    function repeater() {
+      const mm=tf.memory();
+      console.log(`cicle ${count} tensors: ${mm.numTensors} mem: ${mm.numBytes}`);
+      const values = [15000];
+      for (let i = 0; i < 150000; i++) {
+        values[i] = Math.random() * 100;
+      }
+      const shape:[number, number, number]=[1, 500, 300];
+      const a=tf.tensor3d(values, shape, 'int32');
+      const b=tf.tensor3d(values, shape, 'int32');
+      const bb=b.transpose();
+      const c=a.mul(bb);
+      a.dispose();
+      b.dispose();
+      bb.dispose();
+      c.dispose();
+
+    };
+    let count = 0;
+    netUtils.smplUntil(
+      () => { return (count++ > 50); },
+      repeater,
+      (err)=>console.error(err)      
+    );
+
   }
 
   ngOnInit(): void {

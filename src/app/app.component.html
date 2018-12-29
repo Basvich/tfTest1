@@ -1,19 +1,28 @@
-<!--The content below is only a placeholder and can be replaced.-->
+<div class="container">
 <div class="row">
   <div class="col">
     <span>{{title}}</span>
     <p>
       <ngb-alert [dismissible]="false">
-        <strong>Warning!</strong> Sample alert.
+        <strong>Warning!</strong> Bootstrap working!.
       </ngb-alert>
     </p>
   </div>
 </div>
 <div class="row" >
   <div class="col">
-    
-    <button type="button" class="btn btn-primary" (click)="setup()">test2</button>
-    <button type="button" class="btn btn-primary" (click)="testMult()">testMult</button>
+    <ul>
+      <li>
+          <button type="button" class="btn btn-primary" (click)="setup()">test2</button>
+      </li>
+      <li>
+          <button type="button" class="btn btn-primary" (click)="testMult()">testMult</button>
+      </li>
+      <li>
+          <button type="button" class="btn btn-primary" (click)="testMemory()">test Memory</button>
+      </li>
+    </ul>      
   </div>
+</div>
 </div>
 
