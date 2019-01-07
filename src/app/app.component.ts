@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as tf from '@tensorflow/tfjs';
 import { math } from '@tensorflow/tfjs';
-import * as netUtils from '../neutils'
+import * as netUtils from '../neutils';
+import { DenseLayerConfig } from '@tensorflow/tfjs-layers/dist/layers/core';
+//import * as training from '@te'
 
 @Component({
   selector: 'app-root',
@@ -56,17 +58,17 @@ export class AppComponent implements OnInit {
 
   public testMemory() {
     function repeater() {
-      const mm=tf.memory();
+      const mm= tf.memory();
       console.log(`cicle ${count} tensors: ${mm.numTensors} mem: ${mm.numBytes}`);
       const values = [15000];
       for (let i = 0; i < 150000; i++) {
         values[i] = Math.random() * 100;
       }
       const shape:[number, number, number]=[1, 500, 300];
-      const a=tf.tensor3d(values, shape, 'int32');
-      const b=tf.tensor3d(values, shape, 'int32');
-      const bb=b.transpose();
-      const c=a.mul(bb);
+      const a= tf.tensor3d(values, shape, 'int32');
+      const b= tf.tensor3d(values, shape, 'int32');
+      const bb= b.transpose();
+      const c= a.mul(bb);
       a.dispose();
       b.dispose();
       bb.dispose();
@@ -77,8 +79,31 @@ export class AppComponent implements OnInit {
     netUtils.smplUntil(
       () => { return (count++ > 50); },
       repeater,
-      (err)=>console.error(err)      
+      (err)=>console.error(err)
     );
+
+  }
+
+  public testModel1(){
+    const model= tf.sequential();
+
+    const hidden= tf.layers.dense({
+      units: 4,
+      inputShape: [2],
+      activation: 'sigmoid'
+    });
+    const output = tf.layers.dense({
+      units: 3,
+      activation: 'sigmoid'
+    });
+    model.add(hidden);
+    model.add(output);
+    const sdgOpt= tf.train.sgd(0.1);
+    const modelCfg = {
+      optimizer: sdgOpt,
+      loss: tf.losses.meanSquaredError
+    };
+    model.compile(modelCfg);
 
   }
 
