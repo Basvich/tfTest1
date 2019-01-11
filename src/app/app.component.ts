@@ -74,10 +74,10 @@ export class AppComponent implements OnInit {
       bb.dispose();
       c.dispose();
 
-    };
+    }
     let count = 0;
     netUtils.smplUntil(
-      () => { return (count++ > 50); },
+      () => (count++ > 50),
       repeater,
       (err)=>console.error(err)
     );
@@ -86,14 +86,15 @@ export class AppComponent implements OnInit {
 
   public testModel1(){
     const model= tf.sequential();
-
-    const hidden= tf.layers.dense({
-      units: 4,
-      inputShape: [2],
+    // Dense is a fully conected (todos con todos entre capas)
+    const hidden = tf.layers.dense({
+      units: 4,  // Number of nodes
+      inputShape: [2],   // number of input shape
       activation: 'sigmoid'
     });
     const output = tf.layers.dense({
       units: 3,
+      // El input shape se saca del anterior automaticamente
       activation: 'sigmoid'
     });
     model.add(hidden);
@@ -104,6 +105,50 @@ export class AppComponent implements OnInit {
       loss: tf.losses.meanSquaredError
     };
     model.compile(modelCfg);
+
+    const inputData= tf.tensor2d([[0.25, 0.9]]);
+    const outputData= model.predict(inputData);
+    console.log(outputData.toString());
+
+  }
+
+  public testTrainModel1(){
+    const model= tf.sequential();
+    // Dense is a fully conected (todos con todos entre capas)
+    const hidden = tf.layers.dense({
+      units: 4,  // Number of nodes
+      inputShape: [2],   // number of input shape
+      activation: 'sigmoid'
+    });
+    const output = tf.layers.dense({
+      units: 3,
+      // El input shape se saca del anterior automaticamente
+      activation: 'sigmoid'
+    });
+    model.add(hidden);
+    model.add(output);
+    const sdgOpt= tf.train.sgd(0.1);
+    const modelCfg = {
+      optimizer: sdgOpt,
+      loss: tf.losses.meanSquaredError
+    };
+    model.compile(modelCfg);
+
+    const xs=tf.tensor2d([
+      [0.35, 0.92],
+      [0.12, 0.3],
+      [0.4, 0.74]
+    ]);
+    const ys=tf.tensor2d([
+      [0.1, 0.1, 0.02],
+      [0.4, 0.01, 0.22],
+      [0.2, 0.9, 0.02]
+    ]);
+    model.fit(xs, ys, {verbose: 1, epochs: 5}).then( (history) => console.log(history));
+
+    // const inputData= tf.tensor2d([[0.25, 0.9]]);
+    // const outputData= model.predict(inputData);
+    // console.log(outputData.toString());
 
   }
 
