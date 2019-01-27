@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   private y_vals = [];
   private m: Tensor ;
   private b: Tensor ;
-  private learningRate = 0.5;
+  private learningRate = 0.2;
   optimizer = tf.train.sgd(this.learningRate);
 
   public test1(): void {
@@ -189,24 +189,32 @@ export class AppComponent implements OnInit {
     this.canvasP5.mousePressed = (event?: object) => {
       this.mousePressed(event);
     };
+    // m y b son las variuablñes a buscar, y pueden cambiar
     this.m = tf.variable(tf.scalar(this.canvasP5.random(1)));
     this.b = tf.variable(tf.scalar(this.canvasP5.random(1)));
 
-    this.canvasP5.draw = () =>{
+    this.canvasP5.draw = () => {
       this.draw();
     };
 
 
   }
 
-  loss(pred: Tensor, labels: Tensor): Tensor {
+  loss(pred, labels) {
+    // Realiza la resta de lo obtenido, menos lo predicho al cuadrado y la media de eso
     return pred.sub(labels).square().mean();
   }
 
 
-
-  predict(x): Tensor {
-    const xs = tf.tensor1d(x);
+  /**
+   * Pasandole los valor de x, devuelve los calculados y para la recta
+   *
+   * @param {*} x
+   * @returns {Tensor} - Un array con los valores correspondientes para cada entrada
+   * @memberof AppComponent
+   */
+  predict(x: Array<number>): Tensor {
+    const xs = tf.tensor1d(x);  // se pasa de un array normal a un tensor
     // y = mx + b; Ys son los valores teoricos de la recta en los muntos obteniudos
     const ys = xs.mul(this.m).add(this.b);
     return ys;
@@ -231,7 +239,8 @@ export class AppComponent implements OnInit {
     tf.tidy(() => {  // Se liberan automaticamente los tensores creados dentro
       if (this.x_vals.length > 0) {
         const ys2 = tf.tensor1d(this.y_vals);
-        this.optimizer.minimize(() => this.loss(this.predict(this.x_vals), ys2));
+        const yCalculated = this.predict(this.x_vals);
+        this.optimizer.minimize(() => this.loss(yCalculated, ys2));
       }
     });
 
