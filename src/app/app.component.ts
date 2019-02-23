@@ -5,8 +5,6 @@ import * as netUtils from '../neutils';
 import { DenseLayerConfig } from '@tensorflow/tfjs-layers/dist/layers/core';
 // import * as training from '@te'
 import * as p5 from 'p5';
-import 'p5/lib/addons/p5.sound';
-import 'p5/lib/addons/p5.dom';
 import { callAndCheck } from '@tensorflow/tfjs-core/dist/kernels/webgl/webgl_util';
 
 
@@ -70,6 +68,7 @@ export class AppComponent implements OnInit {
   }
 
   public testMemory() {
+    let count = 0;
     function repeater() {
       const mm= tf.memory();
       console.log(`cicle ${count} tensors: ${mm.numTensors} mem: ${mm.numBytes}`);
@@ -86,9 +85,8 @@ export class AppComponent implements OnInit {
       b.dispose();
       bb.dispose();
       c.dispose();
-
     }
-    let count = 0;
+
     netUtils.smplUntil(
       () => (count++ > 50),
       repeater,
@@ -169,7 +167,7 @@ export class AppComponent implements OnInit {
     console.log('ngOnInit');
   }
 
-  public setupLinearRegretion() {
+  public setupLinearRegression() {
 
 
     const sketch = (s) => {
@@ -239,8 +237,7 @@ export class AppComponent implements OnInit {
     tf.tidy(() => {  // Se liberan automaticamente los tensores creados dentro
       if (this.x_vals.length > 0) {
         const ys2 = tf.tensor1d(this.y_vals);
-        const yCalculated = this.predict(this.x_vals);
-        this.optimizer.minimize(() => this.loss(yCalculated, ys2));
+        this.optimizer.minimize(() => this.loss(this.predict(this.x_vals), ys2));
       }
     });
 

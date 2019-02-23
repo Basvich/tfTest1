@@ -1,5 +1,6 @@
 export type IFProccessData<T> = (dataIn: T) => void;
-export type ISimpleCallback = (err?: Error, result?: any) => void;  // before:  export interface ISimpleCallback { (err?: Error, result?: any): void; }
+ // before:  export interface ISimpleCallback { (err?: Error, result?: any): void; }
+export type ISimpleCallback = (err?: Error, result?: any) => void;
 export type ISImpleProccessCallback = (err?: Error, dataStatus?: any, nextDataIn?: any) => void;
 export type ISimpleStep = (data: any, callback: ISimpleCallback) => void;
 export type ISImpleProcessStatus<T> = (dataStatus: any, callback: ISImpleProccessCallback) => IFProccessData<T>;
@@ -37,7 +38,7 @@ export class ExitMachine extends Error {
    */
   function simpleSerialMachine<T>(arrFunc: ISImpleProcessStatus<T>[],
      endFunc: (error: any, data: any) => void, startData?: any): IFProccessData<T> {
-    if (!arrFunc || arrFunc.length <= 0 || !endFunc) throw new Error('Incorrect simpleSerialMachine');
+    if (!arrFunc || arrFunc.length <= 0 || !endFunc)  throw new Error('Incorrect simpleSerialMachine');
     arrFunc.forEach(function (value) {
       if (typeof value !== 'function') throw new Error('Incorrect simpleSerialMachine function');
     });
@@ -88,8 +89,9 @@ export class ExitMachine extends Error {
     if (!coll) return endFunc(null, null);  //No hay colleccion, no devolvemos nada
     if (Array.isArray(coll)) {
       it = arrayIterator(coll);//(<Array<any>>coll).values();
-    } else
+    } else {
       it = coll;
+    }
     let itRes = it.next();
     let currData: any;
     const returnData: Array<any> = [];
@@ -137,12 +139,12 @@ export class ExitMachine extends Error {
 
     function excecuteStep(){
       try{
-        //console.log('excecuteStep()');
+        // console.log('excecuteStep()');
         iteratee();
         if(!test()){
           toNextTick(excecuteStep);
-        }else{
-          if(endFunc) endFunc(null);
+        } else {
+          if (endFunc) endFunc(null);
         }
       }catch(errr){
         if(endFunc) endFunc(errr);
