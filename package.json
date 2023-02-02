@@ -24,7 +24,7 @@
     "@types/p5": "^0.7.2",
     "bootstrap": "^4.2.1",
     "core-js": "^2.5.4",
-    "npm": "^6.5.0",
+    "npm": "^9.4.0",
     "p5": "^0.7.3",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~15.0.0",
-    "@angular/cli": "~7.1.4",
+    "@angular/cli": "~15.1.4",
     "@angular/compiler-cli": "~7.1.0",
     "@angular/language-service": "~7.1.0",
     "@types/node": "~8.9.4",
